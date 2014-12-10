@@ -15,6 +15,7 @@ BuildRequires:	sed >= 4.0
 Requires:	python3 >= 3.2
 Requires:	python3-feedparser
 Requires:	python3-html2text
+BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
