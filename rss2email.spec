@@ -1,7 +1,7 @@
 Summary:	A python script that converts RSS/Atom newsfeeds to email
 Name:		rss2email
 Version:	3.9
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Applications/Networking
 Source0:	https://pypi.python.org/packages/source/r/rss2email/%{name}-%{version}.tar.gz
