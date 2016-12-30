@@ -1,7 +1,7 @@
 Summary:	A python script that converts RSS/Atom newsfeeds to email
 Name:		rss2email
 Version:	3.9
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Applications/Networking
 Source0:	https://pypi.python.org/packages/source/r/rss2email/%{name}-%{version}.tar.gz
@@ -28,14 +28,12 @@ A python script that converts RSS/Atom newsfeeds to email.
 %{__sed} -i -e '1s,^#!.*python,#!%{__python3},' r2e
 
 %build
-%{__python3} setup.py build
+%{py3_build}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%{__python3} setup.py install \
-	--optimize=2 \
-	--root=$RPM_BUILD_ROOT \
-	--skip-build
+
+%{py3_install}
 
 install -d $RPM_BUILD_ROOT%{_mandir}/man1
 cp -p r2e.1 $RPM_BUILD_ROOT%{_mandir}/man1
