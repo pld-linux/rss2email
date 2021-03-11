@@ -1,0 +1,113 @@
+From 338343c92f956c31ff5249ef4bcf7aeea81f687e Mon Sep 17 00:00:00 2001
+From: auouymous <au@qzx.com>
+Date: Fri, 18 Sep 2020 22:21:21 -0600
+Subject: [PATCH 1/5] Support feedparser 6.
+
+---
+ rss2email/feed.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/rss2email/feed.py b/rss2email/feed.py
+index 073811e..65d8742 100644
+--- a/rss2email/feed.py
++++ b/rss2email/feed.py
+@@ -433,7 +433,7 @@ def _check_for_errors(self, parsed):
+         elif isinstance(exc, _SOCKET_ERRORS):
+             _LOG.error('{}: {}'.format(exc, self))
+             warned = True
+-        elif isinstance(exc, _feedparser.zlib.error):
++        elif isinstance(exc, _feedparser.http.zlib.error):
+             _LOG.error('broken compression: {}'.format(self))
+             warned = True
+         elif isinstance(exc, (IOError, AttributeError)):
+
+From 79275b8c67c6cda6d70ffc27c85e56c977f7d4dc Mon Sep 17 00:00:00 2001
+From: auouymous <au@qzx.com>
+Date: Mon, 21 Sep 2020 18:37:27 -0600
+Subject: [PATCH 2/5] Bump feedparser version for pip and tests.
+
+---
+ requirements.txt | 2 +-
+ setup.py         | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index e28361f..2c6aa90 100644
+--- a/setup.py
++++ b/setup.py
+@@ -65,7 +65,7 @@
+     scripts=['r2e'],
+     provides=['rss2email'],
+     install_requires=[
+-        'feedparser>=5.0.1',
++        'feedparser>=6.0.0',
+         'html2text>=3.0.1',
+         ],
+     )
+
+From ba4c3dbbaf769babb656a797691e0bb8edd8d53a Mon Sep 17 00:00:00 2001
+From: auouymous <au@qzx.com>
+Date: Mon, 21 Sep 2020 18:49:38 -0600
+Subject: [PATCH 3/5] Remove support for python 3.5 because feedparser 6
+ requires python 3.6
+
+---
+ .github/workflows/python-package.yml | 2 +-
+ HACKING.md                           | 2 +-
+ nix/release.nix                      | 3 +--
+ rss2email/email.py                   | 2 +-
+ setup.py                             | 1 -
+ 5 files changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/rss2email/email.py b/rss2email/email.py
+index 0b84137..50d222b 100644
+--- a/rss2email/email.py
++++ b/rss2email/email.py
+@@ -325,7 +325,7 @@ def _flatten(message):
+     """
+     bytesio = _io.BytesIO()
+     # TODO: use policies argument instead of policy set in `message`
+-    # see https://docs.python.org/3.5/library/email.generator.html?highlight=bytesgenerator#email.generator.BytesGenerator
++    # see https://docs.python.org/3.6/library/email.generator.html?highlight=bytesgenerator#email.generator.BytesGenerator
+     generator = _BytesGenerator(bytesio)
+     try:
+         generator.flatten(message)
+diff --git a/setup.py b/setup.py
+index 2c6aa90..64d0c02 100644
+--- a/setup.py
++++ b/setup.py
+@@ -54,7 +54,6 @@
+         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+         'Programming Language :: Python',
+         'Programming Language :: Python :: 3',
+-        'Programming Language :: Python :: 3.5',
+         'Programming Language :: Python :: 3.6',
+         'Programming Language :: Python :: 3.7',
+         'Programming Language :: Python :: 3.8',
+
+From 8c99651eced3f29f05ba2c0ca02abb8bb9a18967 Mon Sep 17 00:00:00 2001
+From: auouymous <au@qzx.com>
+Date: Wed, 30 Sep 2020 19:01:28 -0600
+Subject: [PATCH 4/5] The previous hash was generated with a feedparser that
+ lacked sgmllib.
+
+Feedparser on python2, patched feedparser on python3 (Gentoo), and
+feedparser 6 with sgmllib3k properly terminate void elements and
+generate the new hash.
+---
+ test/data/disqus/1.expected | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/test/data/disqus/1.expected b/test/data/disqus/1.expected
+index df764a1..a3f5e8a 100644
+--- a/test/data/disqus/1.expected
++++ b/test/data/disqus/1.expected
+@@ -43,7 +43,7 @@ User-Agent: rss2email/...
+ List-ID: <test.localhost>
+ List-Post: NO (posting not allowed on this list)
+ X-RSS-Feed: data/disqus/feed.rss
+-X-RSS-ID: ab03f2100069a1cd0876b997be87976c18d48e8a
++X-RSS-ID: a52375ec78a988241fe9864a2243d4d910538d52
+ X-RSS-URL: http://software-carpentry.org/2012/11/who-wants-to-write-a-little-code/#comment-713578640
+ 
+ @Hans-Martin  
